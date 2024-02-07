@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Core
+import DoodleCore
 
 func READ(_ input: String) -> [Expr] {
     if input == "quit" || input == "exit" {
