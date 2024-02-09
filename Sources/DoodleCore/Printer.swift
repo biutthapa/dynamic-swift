@@ -14,6 +14,9 @@ public func prnStr(_ expr: Expr, readably: Bool = false) -> String {
     case .keyword(let keyword):
         return ":\(keyword)"
     case .number(let number):
+        if floor(number) == number {
+            return String(Int(number))
+        }
         return String(number)
     case .boolean(let boolean):
         return boolean ? "true" : "false"

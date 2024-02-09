@@ -93,6 +93,19 @@ extension Expr {
         }
         return false
     }
+    
+    public func count() throws -> Int {
+        switch self {
+        case .vector(let items), .list(let items):
+            return items.count
+        case .map(let items):
+            return items.count
+        // case .string(_):
+        //  <#code#>
+        default:
+            throw EvalError.generalError("Expected sequence types on count.")
+        }
+    }
 }
 
 public extension Expr {
@@ -145,7 +158,7 @@ public extension ExprKey {
 extension Array where Element == Expr {
     // car: Returns the first element of the array, if present,
     public func first() -> Expr? {
-        guard !self.isEmpty else { return nil }
+        guard !self.isEmpty else { return .nil }
         return self[0]
     }
     
@@ -156,8 +169,14 @@ extension Array where Element == Expr {
     }
     
     public func last() -> Expr? {
-        guard !self.isEmpty else { return nil }
+        guard !self.isEmpty else { return .nil }
         return self[self.count - 1]
+    }
+    
+    public func count() -> Expr? {
+        guard !self.isEmpty else { return .nil }
+        let num = Double(2)
+        return .number(num)
     }
 }
 

@@ -81,9 +81,16 @@ public let coreNS: [String: Lambda] = [
                                                     expected: "1", found: "\($0.count)")}
     },
     "empty?": { if $0.count == 1 { return .boolean($0.first()!.isEmptyP()) }
-        else {throw EvalError.wrongNumberOfArgument(inOperation: "empty?",
-                                                    expected: "1", found: "\($0.count)")}
+        else { throw EvalError.wrongNumberOfArgument(inOperation: "empty?",
+                                                     expected: "1", found: "\($0.count)") }
     },
+    
+    "count": { if $0.count == 1 { return .number(Number(try ($0.first()?.count())!)) }
+        else { throw EvalError.wrongNumberOfArgument(inOperation: "count",
+                                                     expected: "1", found: "\($0.count)") }
+    },
+        
+
 
     // TODO: quote
     // TODO: cons

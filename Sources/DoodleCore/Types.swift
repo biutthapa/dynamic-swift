@@ -18,6 +18,7 @@ public enum ExprKey: Hashable {
     case string(String)
     case list([Expr])
     case vector([Expr])
+//    indirect case pair(ExprKey, Expr)
     case map([ExprKey: Expr])
     case `nil`
 }
@@ -29,6 +30,7 @@ public enum Expr {
     case `nil`
     case boolean(Bool)
     case string(String)
+//    indirect case pair(ExprKey, Expr)
     indirect case list([Expr])
     indirect case vector([Expr])
     indirect case map([ExprKey: Expr])
