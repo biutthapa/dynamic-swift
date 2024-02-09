@@ -17,6 +17,8 @@ enum ArithmeticOperation {
     case add, subtract, multiply, divide
 }
 
+
+
 fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr {
     guard !args.isEmpty else {
         throw EvalError.wrongNumberOfArgument(inOperation: "arithmatic computation", expected: "atleast one", found: "\(args.count)")
@@ -55,6 +57,8 @@ fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr
                 throw MathError.divisionByZero(inOperation: "arithematic operation")
             }
             return acc / next
+        
+
         }
     }
 
@@ -73,6 +77,11 @@ public let coreNS: [String: Lambda] = [
     "-": { try compute($0, op: .subtract) },
     "*": { try compute($0, op: .multiply) },
     "/": { try compute($0, op: .divide) },
+    
+    "=": { try .boolean($0.areEqualP()) },
+
+    
+    
     "prn": { print($0.map { prnStr($0, readably: true) }.joined(separator: " ")); return .nil},
     "list": { return .list($0) },
 //    "list?": { return .boolean($0.count == 1 ? $0.first()!.isListP() : false) },
@@ -85,11 +94,12 @@ public let coreNS: [String: Lambda] = [
                                                      expected: "1", found: "\($0.count)") }
     },
     
-    "count": { if $0.count == 1 { return .number(Number(try ($0.first()?.count())!)) }
+    "count": { if $0.count == 1 { return .number(Number(try (($0.first?.count())!))) }
         else { throw EvalError.wrongNumberOfArgument(inOperation: "count",
                                                      expected: "1", found: "\($0.count)") }
     },
         
+    // TODO: "=" for comparision
 
 
     // TODO: quote
@@ -97,7 +107,6 @@ public let coreNS: [String: Lambda] = [
     // TODO: first
     // TODO: rest
     // TODO: list
-    // TODO: "=" for comparision
     // TODO: "=" as assignment operator
     // TODO: "keep" as in "keep these items from a sequence"
     // TODO: "map"

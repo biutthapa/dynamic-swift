@@ -94,7 +94,7 @@ extension Expr {
         return false
     }
     
-    public func count() throws -> Int {
+    func count() throws -> Int {
         switch self {
         case .vector(let items), .list(let items):
             return items.count
@@ -106,6 +106,7 @@ extension Expr {
             throw EvalError.generalError("Expected sequence types on count.")
         }
     }
+    
 }
 
 public extension Expr {
@@ -173,11 +174,19 @@ extension Array where Element == Expr {
         return self[self.count - 1]
     }
     
-    public func count() -> Expr? {
-        guard !self.isEmpty else { return .nil }
-        let num = Double(2)
-        return .number(num)
+    public func count() -> Int {
+        guard !self.isEmpty else { return 0 }
+        return self.count
     }
+    
+    public func areEqualP() throws -> Bool {
+        guard !self.isEmpty else {
+            throw EvalError.wrongNumberOfArgument(inOperation: "areEqual?", expected: "atleast 1",
+                                                  found: "\(self.count)")
+        }
+        return self.allSatisfy { $0 == self.first }
+    }
+
 }
 
 extension Dictionary where Key == String, Value == Expr {
