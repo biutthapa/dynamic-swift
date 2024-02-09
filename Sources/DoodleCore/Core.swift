@@ -69,13 +69,22 @@ fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr
 
 
 public let coreNS: [String: Lambda] = [
-    "+": { args in try compute(args, op: .add) },
-    "-": { args in try compute(args, op: .subtract) },
-    "*": { args in try compute(args, op: .multiply) },
-    "/": { args in try compute(args, op: .divide) },
-//    "prn": { args in
-//        prnStr(args.first(), readably: true)
-//    }
+    "+": { try compute($0, op: .add) },
+    "-": { try compute($0, op: .subtract) },
+    "*": { try compute($0, op: .multiply) },
+    "/": { try compute($0, op: .divide) },
+    "prn": { print($0.map { prnStr($0, readably: true) }.joined(separator: " ")); return .nil}
+    // TODO: quote
+    // TODO: cons
+    // TODO: first
+    // TODO: rest
+    // TODO: list
+    // TODO: "=" as assignment operator
+    // TODO: "keep" as in "keep these items from a sequence"
+    // TODO: "map"
+    
+    
+    
 ]
 
 
