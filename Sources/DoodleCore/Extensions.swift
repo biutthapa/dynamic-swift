@@ -69,6 +69,17 @@ extension ExprKey {
 
 // Predicates
 extension Expr {
+    func isEmptyP() -> Bool {
+        switch self {
+        case .vector(let items), .list(let items):
+            return items.isEmpty
+        case .map(let items):
+            return items.isEmpty
+        default:
+            return false
+        }
+    }
+    
     func isVectorP() -> Bool {
         if case .vector(_) = self {
             return true

@@ -80,6 +80,10 @@ public let coreNS: [String: Lambda] = [
         else {throw EvalError.wrongNumberOfArgument(inOperation: "vector?",
                                                     expected: "1", found: "\($0.count)")}
     },
+    "empty?": { if $0.count == 1 { return .boolean($0.first()!.isEmptyP()) }
+        else {throw EvalError.wrongNumberOfArgument(inOperation: "empty?",
+                                                    expected: "1", found: "\($0.count)")}
+    },
 
     // TODO: quote
     // TODO: cons
