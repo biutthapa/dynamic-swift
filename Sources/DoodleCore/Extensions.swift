@@ -32,7 +32,7 @@ extension Array where Element == Expr {
 }
 
 extension ExprKey {
-    public func toString() -> String {
+    public func toString(readably: Bool = false) -> String {
         switch self {
         case .symbol(let symbol):
             return symbol
@@ -43,15 +43,23 @@ extension ExprKey {
         case .boolean(let boolean):
             return boolean ? "true" : "false"
         case .string(let string):
-            return "\"\(string)\""
+            if readably {
+                let out = string.replacingOccurrences(of: "\\", with: "\\\\")
+                    .replacingOccurrences(of: "\"", with: "\\\"")
+                    .replacingOccurrences(of: "\n", with: "\\n")
+                return out
+            } else {
+                return "\"\(string)\""
+            }
+
         case .list(let list):
-            let listContents = list.map(prnStr).joined(separator: " ")
+            let listContents = list.map{ prnStr($0, readably: readably) }.joined(separator: " ")
             return "(\(listContents))"
         case .vector(let vector):
-            let vectorContents = vector.map(prnStr).joined(separator: " ")
+            let vectorContents = vector.map{ prnStr($0, readably: readably) }.joined(separator: " ")
             return "[\(vectorContents)]"
         case .map(let mapPairs):
-            let mapContents = mapPairs.map { (key, value) in prnStr(key.toExpr()) + " " + prnStr(value) }.joined(separator: " ")
+            let mapContents = mapPairs.map { (key, value) in prnStr(key.toExpr(), readably: readably) + " " + prnStr(value, readably: readably) }.joined(separator: " ")
             return "{\(mapContents)}"
         case .nil:
             return "nil"
@@ -107,13 +115,13 @@ public extension ExprKey {
 }
 
 extension Array where Element == Expr {
-    // car: Returns the first element of the array, if present, without using .first.
+    // car: Returns the first element of the array, if present,
     public func first() -> Expr? {
         guard !self.isEmpty else { return nil }
         return self[0]
     }
     
-    // cdr: Returns a new array containing all elements except the first, without using .dropFirst.
+    // cdr: Returns a new array containing all elements except the first
     public func rest() -> [Expr] {
         guard !self.isEmpty else { return [] }
         return Array(self[1..<self.count])

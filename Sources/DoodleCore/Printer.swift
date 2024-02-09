@@ -7,7 +7,7 @@
 
 import Foundation
 
-public func prnStr(_ expr: Expr) -> String {
+public func prnStr(_ expr: Expr, readably: Bool = false) -> String {
     switch expr {
     case .symbol(let symbol):
         return symbol
@@ -18,21 +18,30 @@ public func prnStr(_ expr: Expr) -> String {
     case .boolean(let boolean):
         return boolean ? "true" : "false"
     case .string(let string):
-        return "\"\(string)\""
+        if readably {
+            let out = string.replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "\"", with: "\\\"")
+                .replacingOccurrences(of: "\n", with: "\\n")
+            return out
+        } else {
+            return "\"\(string)\""
+        }
     case .list(let list):
-        let listContents = list.map(prnStr).joined(separator: " ")
+        let listContents = list.map{ prnStr($0, readably: readably) }.joined(separator: " ")
         return "(\(listContents))"
     case .vector(let vector):
-        let vectorContents = vector.map(prnStr).joined(separator: " ")
+        let vectorContents = vector.map{ prnStr($0, readably: readably) }.joined(separator: " ")
         return "[\(vectorContents)]"
     case .map(let mapPairs):
-        let mapContents = mapPairs.map { (key, value) in prnStr(key.toExpr()) + " " + prnStr(value) }.joined(separator: " ")
+        let mapContents = mapPairs.map { (key, value) in prnStr(key.toExpr(), readably: readably) + " " + prnStr(value, readably: readably) }.joined(separator: " ")
         return "{\(mapContents)}"
     case .nil:
         return "nil"
     case .lambda:
         return "#<lambda>"
-
     }
 }
+
+
+func transformation() {}
 

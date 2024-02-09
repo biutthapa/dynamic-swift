@@ -5,13 +5,10 @@
 //  Created by Biut Raj Thapa on 29/12/2023.
 //
 
-
-
 import Foundation
 
 public typealias Lambda = ([Expr]) throws -> Expr
 public typealias Number = Double
-
 
 public enum ExprKey: Hashable {
     case symbol(String)
@@ -37,8 +34,6 @@ public enum Expr {
     indirect case map([ExprKey: Expr])
     indirect case lambda(Lambda)
 }
-
-
 
 public enum DataError: Error {
     case unequalKeyValueCount(String)
