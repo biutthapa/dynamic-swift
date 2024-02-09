@@ -68,12 +68,12 @@ fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr
 }
 
 
-public let coreNS: [String: Expr] = [
-    "+": .lambda({ args in try compute(args, op: .add) }),
-    "-": .lambda({ args in try compute(args, op: .subtract) }),
-    "*": .lambda({ args in try compute(args, op: .multiply) }),
-    "/": .lambda({ args in try compute(args, op: .divide) }),
-//    "prn": ilamb{ args in
+public let coreNS: [String: Lambda] = [
+    "+": { args in try compute(args, op: .add) },
+    "-": { args in try compute(args, op: .subtract) },
+    "*": { args in try compute(args, op: .multiply) },
+    "/": { args in try compute(args, op: .divide) },
+//    "prn": { args in
 //        prnStr(args.first(), readably: true)
 //    }
 ]
