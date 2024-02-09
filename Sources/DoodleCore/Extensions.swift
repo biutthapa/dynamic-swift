@@ -186,6 +186,8 @@ extension Array where Element == Expr {
         }
         return self.allSatisfy { $0 == self.first }
     }
+    
+   
 
 }
 

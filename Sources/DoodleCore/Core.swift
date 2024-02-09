@@ -17,6 +17,39 @@ enum ArithmeticOperation {
     case add, subtract, multiply, divide
 }
 
+enum ComparisonOperation {
+    case isLessThanP, isLessOrEqualToP, isGreaterThanP, isGreaterOrEqualToP
+}
+
+fileprivate func compute(_ args: [Expr], op: ComparisonOperation) throws -> Expr {
+    guard args.count == 2 else {
+        throw EvalError.wrongNumberOfArgument(inOperation: "Binary computation", expected: "2", found: "\(args.count)")
+    }
+    
+    let numbers = try args.map { expr -> Number in
+        switch expr {
+        case .number(let value):
+            return value
+        default:
+            throw EvalError.invalidArgument(argument: "non numberic", inOperation: "binary operation")
+        }
+    }
+    
+    let operation: (Number, Number) throws -> Bool = { a, b in
+        switch op {
+        case .isLessThanP:
+            return a < b
+        case .isLessOrEqualToP:
+            return a <= b
+        case .isGreaterThanP:
+            return a > b
+        case .isGreaterOrEqualToP:
+            return a >= b
+        }
+    }
+    
+    return .boolean(try operation(numbers[0], numbers[1]))
+}
 
 
 fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr {
@@ -57,8 +90,6 @@ fileprivate func compute(_ args: [Expr], op: ArithmeticOperation) throws -> Expr
                 throw MathError.divisionByZero(inOperation: "arithematic operation")
             }
             return acc / next
-        
-
         }
     }
 
@@ -80,8 +111,11 @@ public let coreNS: [String: Lambda] = [
     
     "=": { try .boolean($0.areEqualP()) },
 
-    
-    
+    "<": { try compute($0, op: .isLessThanP) },
+    "<=": { try compute($0, op: .isLessOrEqualToP) },
+    ">": { try compute($0, op: .isGreaterThanP) },
+    ">=": { try compute($0, op: .isGreaterOrEqualToP) },
+
     "prn": { print($0.map { prnStr($0, readably: true) }.joined(separator: " ")); return .nil},
     "list": { return .list($0) },
 //    "list?": { return .boolean($0.count == 1 ? $0.first()!.isListP() : false) },
