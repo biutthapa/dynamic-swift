@@ -133,8 +133,6 @@ public let coreNS: [String: Lambda] = [
                                                      expected: "1", found: "\($0.count)") }
     },
         
-    // TODO: "=" for comparision
-
 
     // TODO: quote
     // TODO: cons
