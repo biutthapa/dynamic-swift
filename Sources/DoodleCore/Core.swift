@@ -73,12 +73,20 @@ public let coreNS: [String: Lambda] = [
     "-": { try compute($0, op: .subtract) },
     "*": { try compute($0, op: .multiply) },
     "/": { try compute($0, op: .divide) },
-    "prn": { print($0.map { prnStr($0, readably: true) }.joined(separator: " ")); return .nil}
+    "prn": { print($0.map { prnStr($0, readably: true) }.joined(separator: " ")); return .nil},
+    "list": { return .list($0) },
+//    "list?": { return .boolean($0.count == 1 ? $0.first()!.isListP() : false) },
+    "vector?": { if $0.count == 1 { return .boolean($0.first()!.isVectorP()) }
+        else {throw EvalError.wrongNumberOfArgument(inOperation: "vector?",
+                                                    expected: "1", found: "\($0.count)")}
+    },
+
     // TODO: quote
     // TODO: cons
     // TODO: first
     // TODO: rest
     // TODO: list
+    // TODO: "=" for comparision
     // TODO: "=" as assignment operator
     // TODO: "keep" as in "keep these items from a sequence"
     // TODO: "map"

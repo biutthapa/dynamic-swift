@@ -67,6 +67,23 @@ extension ExprKey {
     }
 }
 
+// Predicates
+extension Expr {
+    func isVectorP() -> Bool {
+        if case .vector(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    func isListP() -> Bool {
+        if case .list(_) = self {
+            return true
+        }
+        return false
+    }
+}
+
 public extension Expr {
     var numberValue: Number? {
         if case let .number(value) = self { return value }
