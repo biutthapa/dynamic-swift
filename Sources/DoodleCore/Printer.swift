@@ -44,7 +44,3 @@ public func prnStr(_ expr: Expr, readably: Bool = false) -> String {
         return "#<lambda>"
     }
 }
-
-
-func transformation() {}
-
