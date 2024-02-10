@@ -158,7 +158,6 @@ func tokenizeString(_ input: String) -> [String] {
       .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
       .filter { !$0.trimmingCharacters(in: .whitespaces).starts(with: ";") }
 
-    // Remove the last token if it is an empty string
     if let lastToken = tokens.last, lastToken.isEmpty {
         tokens.removeLast()
     }

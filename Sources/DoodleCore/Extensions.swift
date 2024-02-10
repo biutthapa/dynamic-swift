@@ -69,7 +69,7 @@ extension ExprKey {
 
 // Predicates
 extension Expr {
-    func isEmptyP() -> Bool {
+    public func isEmptyP() -> Bool {
         switch self {
         case .vector(let items), .list(let items):
             return items.isEmpty
@@ -80,21 +80,21 @@ extension Expr {
         }
     }
     
-    func isVectorP() -> Bool {
+    public func isVectorP() -> Bool {
         if case .vector(_) = self {
             return true
         }
         return false
     }
     
-    func isListP() -> Bool {
+    public func isListP() -> Bool {
         if case .list(_) = self {
             return true
         }
         return false
     }
     
-    func count() throws -> Int {
+    public func count() throws -> Int {
         switch self {
         case .vector(let items), .list(let items):
             return items.count
@@ -106,7 +106,6 @@ extension Expr {
             throw EvalError.generalError("Expected sequence types on count.")
         }
     }
-    
 }
 
 public extension Expr {
@@ -208,24 +207,24 @@ extension Dictionary where Key == String, Value == Expr {
 extension Dictionary {
     
     // Create a new dictionary with added or updated key-value pairs
-    func assoc(_ key: Key, _ value: Value) -> Dictionary {
+    public func assoc(_ key: Key, _ value: Value) -> Dictionary {
         var newDict = self
         newDict[key] = value
         return newDict
     }
     
     // Merge two dictionaries, with values from the second dict overriding those from the first in case of key conflicts
-    func merge(with dict: Dictionary) -> Dictionary {
+    public func merge(with dict: Dictionary) -> Dictionary {
         return self.merging(dict) { (_, new) in new }
     }
     
     // Retrieves the value for a key, or returns a default value if the key is not found
-    func get(_ key: Key, defaultValue: Value) -> Value {
+    public func get(_ key: Key, defaultValue: Value) -> Value {
         return self[key] ?? defaultValue
     }
     
     // Updates the value for a key using a transformation function, if the key exists
-    func update(_ key: Key, transform: (Value) -> Value) -> Dictionary {
+    public func update(_ key: Key, transform: (Value) -> Value) -> Dictionary {
         var newDict = self
         if let currentValue = newDict[key] {
             newDict[key] = transform(currentValue)
@@ -234,7 +233,7 @@ extension Dictionary {
     }
     
     // Selects a new dictionary with only the specified keys
-    func selectKeys(_ keys: [Key]) -> Dictionary {
+    public func selectKeys(_ keys: [Key]) -> Dictionary {
         return keys.reduce(into: Dictionary()) { result, key in
             if let value = self[key] {
                 result[key] = value
@@ -243,18 +242,18 @@ extension Dictionary {
     }
     
     // Checks if a key is present in the dictionary
-    func containsKey(_ key: Key) -> Bool {
+    public func containsKey(_ key: Key) -> Bool {
         return self[key] != nil
     }
     
     // Transform keys and values with given functions
-    func mapKeys<T>(_ transform: (Key) -> T) -> Dictionary<T, Value> {
+    public func mapKeys<T>(_ transform: (Key) -> T) -> Dictionary<T, Value> {
         return self.reduce(into: Dictionary<T, Value>()) { result, entry in
             result[transform(entry.key)] = entry.value
         }
     }
     
-    func mapValues<T>(_ transform: (Value) -> T) -> Dictionary<Key, T> {
+    public func mapValues<T>(_ transform: (Value) -> T) -> Dictionary<Key, T> {
         return self.reduce(into: Dictionary<Key, T>()) { result, entry in
             result[entry.key] = transform(entry.value)
         }
