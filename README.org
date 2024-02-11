@@ -1,8 +1,8 @@
-#+subtitle: Dynamic Swift
+#+title: Dynamic Swift
 
 (Work in Progress, Not Ready for Production)
 
-* Main Ideas
+* *The Main Ideas:*
 ** Versatile Arrays
 Support arrays with variadic arguments of mixed types, enabling the creation of flexible and dynamically typed collections.
 #+begin_src swift
