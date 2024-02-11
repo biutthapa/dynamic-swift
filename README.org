@@ -1,4 +1,4 @@
-#+title: Dynamic Swift
+#+subtitle: Dynamic Swift
 
 (Work in Progress, Not Ready for Production)
 
