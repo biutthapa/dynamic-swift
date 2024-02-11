@@ -2,7 +2,7 @@
 
 *Dynamically Typed Swift, Built on Regular Swift.*
 
-(Work in Progress, Not Ready for Production)
+/(Work in Progress, Not Ready for Production)/
 
 ** *The Main Ideas:*
 *** Versatile Arrays
