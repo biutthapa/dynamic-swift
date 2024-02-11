@@ -26,36 +26,39 @@ struct Reader {
     }
 }
 
-func readForm(_ reader: Reader) throws -> (Expr, Reader) {
+func readBlock(_ reader: Reader) throws -> (Expr, Reader) {
     guard let token = reader.peek() else {
         throw ParserError.unexpectedEndOfInput
     }
 
-    switch token.first {
-    case "(":
-        return try readSequence(reader.next(), startDelimiter: "(", endDelimiter: ")")
-    case "[":
-        return try readSequence(reader.next(), startDelimiter: "[", endDelimiter: "]")
-    case "{":
-        return try readHashMap(reader.next())
+    switch token {
+    case "let", "func", "if", "for", "while":
+        return try readStatement(reader)
     default:
-        return try readAtom(reader)
+        return try readExpression(reader)
     }
 }
 
-func readForms(_ reader: Reader) throws -> ([Expr], Reader) {
-    var reader = reader
+func readBlocks(_ reader: Reader) throws -> ([Expr], Reader) {
     var expressions = [Expr]()
-
-    while reader.position < reader.tokens.count {
-        let (expr, nextReader) = try readForm(reader)
+    
+    while let _ = reader.peek() {
+        let (expr, _) = try readBlock(reader)
         expressions.append(expr)
-        reader = nextReader
     }
-
+    
     return (expressions, reader)
 }
 
+func readStatement(_ reader: Reader) throws -> (Expr, Reader) {
+    // Implementation for reading statements like let, func, if, for, while
+    throw ParserError.invalidSyntax("Statements parsing not implemented yet.")
+}
+
+func readExpression(_ reader: Reader) throws -> (Expr, Reader) {
+    // Implementation for reading expressions
+    throw ParserError.invalidSyntax("Expressions parsing not implemented yet.")
+}
 
 func readAtom(_ reader: Reader) throws -> (Expr, Reader) {
     guard let token = reader.peek() else {
@@ -111,7 +114,7 @@ func readSequence(_ reader: Reader, startDelimiter: String, endDelimiter: String
     var items = [Expr]()
 
     while let token = reader.peek(), token != endDelimiter {
-        let (expr, nextReader) = try readForm(reader)
+        let (expr, nextReader) = try readBlock(reader)
         items.append(expr)
         reader = nextReader
     }
@@ -120,7 +123,7 @@ func readSequence(_ reader: Reader, startDelimiter: String, endDelimiter: String
         throw ParserError.unbalancedParentheses
     }
 
-    let expr: Expr = (startDelimiter == "(") ? .list(items) : .vector(items)
+    let expr: Expr = (startDelimiter == "(") ? .list(items) : .array(items)
     return (expr, reader.next())
 }
 
@@ -132,14 +135,14 @@ func readHashMap(_ reader: Reader) throws -> (Expr, Reader) {
 
     while let token = reader.peek(), token != "}" {
         // Parse the key
-        let (keyExpr, nextReaderForKey) = try readForm(reader)
+        let (keyExpr, nextReaderForKey) = try readBlock(reader)
         guard let mapKey = keyExpr.makeKey() else {
             throw ParserError.invalidMapKey
         }
         reader = nextReaderForKey
 
         // Parse the value
-        let (valueExpr, nextReaderForValue) = try readForm(reader)
+        let (valueExpr, nextReaderForValue) = try readBlock(reader)
         map[mapKey] = valueExpr
         reader = nextReaderForValue
     }
@@ -152,27 +155,37 @@ func readHashMap(_ reader: Reader) throws -> (Expr, Reader) {
 }
 
 
-func tokenizeString(_ input: String) -> [String] {
-    let pattern = #"[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)"#
-    var tokens = extractMatches(from: input, usingPattern: pattern)
-      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-      .filter { !$0.trimmingCharacters(in: .whitespaces).starts(with: ";") }
 
-    if let lastToken = tokens.last, lastToken.isEmpty {
-        tokens.removeLast()
-    }
 
-    return tokens
-}
 
 public func readStr(_ input: String) -> [Expr] {
     let tokens = tokenizeString(input)
     let reader = Reader(tokens: tokens, position: 0)
     do {
-        let (parsed, _) = try readForms(reader)
+        let (parsed, _) = try readBlocks(reader)
         return parsed
     } catch {
         print("Parsing error: \(error)")
         return []
     }
+}
+func tokenizeString(_ input: String) -> [String] {
+    let patterns = [
+        #""[^"\\]*(\\.[^"\\]*)*""#, // Corrected string literals pattern
+        #"[\d]+(?:\.\d+)?(?:e[\+\-]?\d+)?"#, // Decimal & integer numbers
+        #"\[|\]"#, // Array brackets
+        #"\(|\)"#, // Parentheses for expressions or tuples
+        #"\{|\}"#, // Curly braces for hashmaps (if needed)
+        #"\w+"#, // Identifiers (variable names, function names)
+        #"\s+"#, // Whitespace as separators
+        #","#, // Comma as tuple or array separator
+        #"true|false"# // Boolean literals
+    ]
+    let pattern = patterns.joined(separator: "|")
+    
+    var tokens = extractMatches(from: input, usingPattern: pattern)
+      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+      .filter { !$0.isEmpty && !$0.trimmingCharacters(in: .whitespaces).starts(with: ";") }
+    
+    return tokens
 }

@@ -55,7 +55,7 @@ extension ExprKey {
         case .list(let list):
             let listContents = list.map{ prnStr($0, readably: readably) }.joined(separator: " ")
             return "(\(listContents))"
-        case .vector(let vector):
+        case .array(let vector):
             let vectorContents = vector.map{ prnStr($0, readably: readably) }.joined(separator: " ")
             return "[\(vectorContents)]"
         case .map(let mapPairs):
@@ -71,7 +71,7 @@ extension ExprKey {
 extension Expr {
     public func isEmptyP() -> Bool {
         switch self {
-        case .vector(let items), .list(let items):
+        case .array(let items), .list(let items):
             return items.isEmpty
         case .map(let items):
             return items.isEmpty
@@ -81,7 +81,7 @@ extension Expr {
     }
     
     public func isVectorP() -> Bool {
-        if case .vector(_) = self {
+        if case .array(_) = self {
             return true
         }
         return false
@@ -96,7 +96,7 @@ extension Expr {
     
     public func count() throws -> Int {
         switch self {
-        case .vector(let items), .list(let items):
+        case .array(let items), .list(let items):
             return items.count
         case .map(let items):
             return items.count
@@ -145,8 +145,8 @@ public extension ExprKey {
             return .string(value)
         case .list(let exprList):
             return .list(exprList)
-        case .vector(let exprVector):
-            return .vector(exprVector)
+        case .array(let exprVector):
+            return .array(exprVector)
         case .map(let exprMap):
             return .map(exprMap)
         case .nil:
@@ -277,7 +277,7 @@ extension Expr: Equatable {
             return a == b
         case (.list(let a), .list(let b)):
             return a == b
-        case (.vector(let a), .vector(let b)):
+        case (.array(let a), .array(let b)):
             return a == b
         case (.map(let a), .map(let b)):
             return a == b
@@ -287,7 +287,7 @@ extension Expr: Equatable {
             // Lambda functions are treated as always unequal
             return false
         case (.list(_), _),
-             (.vector(_), _),
+             (.array(_), _),
              (.map(_), _),
              (.nil, _):
             return false
@@ -309,7 +309,7 @@ extension Expr: Hashable {
             hasher.combine(value)
         case .list(let list):
             hasher.combine(list)
-        case .vector(let vector):
+        case .array(let vector):
             hasher.combine(vector)
         case .map(let map):
             for (key, value) in map {

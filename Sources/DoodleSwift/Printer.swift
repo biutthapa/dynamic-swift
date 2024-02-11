@@ -32,7 +32,7 @@ public func prnStr(_ expr: Expr, readably: Bool = false) -> String {
     case .list(let list):
         let listContents = list.map{ prnStr($0, readably: readably) }.joined(separator: " ")
         return "(\(listContents))"
-    case .vector(let vector):
+    case .array(let vector):
         let vectorContents = vector.map{ prnStr($0, readably: readably) }.joined(separator: " ")
         return "[\(vectorContents)]"
     case .map(let mapPairs):

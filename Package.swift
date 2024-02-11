@@ -4,10 +4,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "doodle-core",
+    name: "doodle-swift",
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(name: "DoodleCore", targets: ["DoodleCore"]),
+        .library(name: "DoodleSwift", targets: ["DoodleSwift"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -16,7 +16,7 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
-		.target(name: "DoodleCore", dependencies: []),
-//        .executableTarget(name: "DoodleREPL", dependencies: ["DoodleCore"]),
+		.target(name: "DoodleSwift", dependencies: []),
+//        .executableTarget(name: "DoodleSwiftREPL", dependencies: ["DoodleSwift"]),
     ]
 )

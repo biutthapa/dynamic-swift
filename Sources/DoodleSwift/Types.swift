@@ -17,9 +17,12 @@ public enum ExprKey: Hashable {
     case boolean(Bool)
     case string(String)
     case list([Expr])
-    case vector([Expr])
+    case array([Expr])
+    // let mixedArray = [1, "two", 3.0, (name: "Jane Doe", age: 30)]
 //    indirect case pair(ExprKey, Expr)
     case map([ExprKey: Expr])
+    // this the hashmap that looks like tuple but works like map in clojure.
+    // let person = (name: "Jane Doe", age: 30, languages: ["English", "French"])
     case `nil`
 }
 
@@ -30,10 +33,14 @@ public enum Expr {
     case `nil`
     case boolean(Bool)
     case string(String)
+    case identifier(String)
 //    indirect case pair(ExprKey, Expr)
     indirect case list([Expr])
-    indirect case vector([Expr])
+    indirect case array([Expr])
+    // let mixedArray = [1, "two", 3.0, (name: "Jane Doe", age: 30)]
     indirect case map([ExprKey: Expr])
+    // this the hashmap that looks like tuple but works like map in clojure.
+    // let person = (name: "Jane Doe", age: 30, languages: ["English", "French"])
     indirect case lambda(Lambda)
 }
 
@@ -49,6 +56,7 @@ public enum ParserError: Error {
     case unexpectedEndOfInput
     case unbalancedParentheses
     case invalidMapKey
+    case invalidSyntax(String)
 }
 
 public enum EnvError: Error {
